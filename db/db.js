@@ -9,7 +9,4 @@ const pool = new Pool({
   database: process.env.DB_NAME,
 });
 
-/**Borrar log */
-console.log(pool);
-
 module.exports = { pool };

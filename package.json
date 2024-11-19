@@ -4,7 +4,7 @@
   "description": "Proyecto para cargar datos desde Excel a PostgreSQL",
   "main": "server.js",
   "scripts": {
-    "start": "node --watch-preserve-output server.js"
+    "start": "node --watch server.js"
   },
   "keywords": [],
   "author": "",
