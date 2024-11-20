@@ -4,27 +4,27 @@ const { pool } = require("../db/db");
 async function processExcel(filePath) {
   const workbook = xlsx.readFile(filePath, { cellDates: true });
   const sheet = workbook.Sheets[workbook.SheetNames[0]];
-  const data = xlsx.utils.sheet_to_json(sheet, { raw: true });
+  const data = xlsx.utils.sheet_to_json(sheet, { raw: false });
 
   const normalizedRows = data.map((row) => {
     const normalizedRow = {};
-    try {
-      for (const key in row) {
-        // Asegurarte de que todas las claves sean cadenas
-        normalizedRow[String(key).trim()] = row[key];
+    for (const key in row) {
+      let value = row[key];
+      // Verificar si el valor es una fecha
+      if (value instanceof Date) {
+        // Convertir a string en el formato correcto
+        // Si necesitas una zona horaria específica, usa moment-timezone
+        // value = moment(value).tz('America/New_York').format('YYYY-MM-DD HH:mm:ss');
+        value = value.toISOString().replace("T", " ").replace("Z", ""); // Eliminar la 'Z' y reemplazar 'T' por un espacio
       }
-      return normalizedRow;
-    } catch (error) {
-      throw new Error(error);
-      console.log(error);
+      normalizedRow[String(key).trim()] = value;
     }
+    return normalizedRow;
   });
-  console.log(normalizedRows);
-
+  
   const client = await pool.connect();
 
   try {
-    console.log(data);
     for (const row of data) {
       const {
         id,
