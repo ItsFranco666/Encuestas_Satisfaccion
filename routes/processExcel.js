@@ -1,9 +1,9 @@
-const xlsx = require('xlsx');
-const moment = require('moment-timezone');
-const { pool } = require('../db/db');
+const xlsx = require('xlsx'); // Lectura de archivos xlsx
+const moment = require('moment-timezone'); // Manejo de fechas
+const { pool } = require('../db/db'); // Conexion con la base de datos postgre
 
 // Funcion asincrona para procesar los datos de la hoja de calculo (reportes de cada encuesta)
-async function processExcel(filePath) {
+async function processExcel(filePath, nombreArchivo) {
   // Leer el archivo de Excel y convertirlo a un array de objetos JSON con las filas normalizadas
   const workbook = xlsx.readFile(filePath, { cellDates: true });
 
@@ -53,8 +53,7 @@ async function processExcel(filePath) {
       const datos_usuario = Object.values(respuestas).slice(0, 8);
 
       /**Formatear la fecha obtenida de la celda de hora de finalizacion la cual se utilizara como fecha de realizacion
-       * del cuestionario. EL formato se realiza para adaptarlo al formato TIMESTAMP que admite postgreSQL
-       */
+       * del cuestionario. EL formato se realiza para adaptarlo al formato TIMESTAMP que admite postgreSQL */
       const fechaFinalizacion = moment(
         datos_usuario[2],
         'MM/DD/YY HH:mm:ss'
@@ -65,7 +64,7 @@ async function processExcel(filePath) {
         `INSERT INTO encuestas (nombre_encuesta) 
                 VALUES ($1)
                 RETURNING id_encuesta`,
-        ['Nueva Encuesta']
+        [nombreArchivo]
       );
       const id_encuesta = encuesta.rows[0]?.id_encuesta;
 
@@ -136,6 +135,7 @@ async function processExcel(filePath) {
     console.error(error);
     throw new Error('Error procesando el archivo.');
   } finally {
+    // Terminar pool con la bd
     client.release();
   }
 }

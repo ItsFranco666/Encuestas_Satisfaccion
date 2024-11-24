@@ -32,26 +32,29 @@
  * 3. Manda el objeto a la ruta de /upload que se manejara desde server.js
  * 4. Esperara una respuesta de la rutay retornara el mensaje que devuelve */
 document
-  .getElementById('upload-form')
-  .addEventListener('submit', async (event) => {
-    event.preventDefault();
+    .getElementById('upload-form')
+    .addEventListener('submit', async (event) => {
+        event.preventDefault();
 
-    const fileInput = document.getElementById('file');
-    if (fileInput.files.length === 0) {
-      alert('Seleccione un archivo antes de subirlo.');
-      return;
-    }
+        const fileInput = document.getElementById('file');
+        if (fileInput.files.length === 0) {
+            alert('Seleccione un archivo antes de subirlo.');
+            return;
+        }
 
-    const formData = new FormData();
-    formData.append('file', fileInput.files[0]);
+        // Obtener el nombre del archivo
+        const archivo = fileInput.files[0]; // Obtener el archivo cargado
+        const nombreArchivo = archivo.name;
 
-    console.log(formData);
+        const formData = new FormData();
+        formData.append('file', archivo);
+        formData.append('nombreArchivo', nombreArchivo);
 
-    const response = await fetch('/upload', {
-      method: 'POST',
-      body: formData,
+        const response = await fetch('/upload', {
+            method: 'POST',
+            body: formData,
+        });
+
+        const result = await response.json();
+        document.getElementById('message').textContent = result.message;
     });
-
-    const result = await response.json();
-    document.getElementById('message').textContent = result.message;
-  });
