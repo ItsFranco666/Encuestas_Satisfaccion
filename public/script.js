@@ -36,6 +36,8 @@ document
     .addEventListener('submit', async (event) => {
         event.preventDefault();
 
+        const mensaje = document.getElementById('mensaje');
+
         const fileInput = document.getElementById('file');
         if (fileInput.files.length === 0) {
             alert('Seleccione un archivo antes de subirlo.');
@@ -56,5 +58,7 @@ document
         });
 
         const result = await response.json();
-        document.getElementById('message').textContent = result.message;
+        document.getElementById('mensaje').textContent = result.message;
+
+        response.ok?mensaje.classList.toggle('ok'):mensaje.classList.toggle('error');
     });

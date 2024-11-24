@@ -60,30 +60,58 @@ async function processExcel(filePath, nombreArchivo) {
       ).format('YYYY-MM-DD HH:mm:ss');
 
       // 1. Verificar o insertar encuesta
-      const encuesta = await client.query(
-        `INSERT INTO encuestas (nombre_encuesta) 
-                VALUES ($1)
-                RETURNING id_encuesta`,
+      const verificarEncuesta = await client.query(
+        `SELECT id_encuesta 
+            FROM encuestas 
+            WHERE nombre_encuesta = $1;`,
         [nombreArchivo]
       );
-      const id_encuesta = encuesta.rows[0]?.id_encuesta;
+
+      let idEncuesta;
+
+      // Verificar que la encuesta ya se encuestre en la bd y extraer su ID
+      if (verificarEncuesta.rows.length > 0) {
+        // Ternario para no agregar nada en caso de que no se cumpla la condicion
+        id_encuesta = verificarEncuesta.rows[0]?.id_encuesta;
+      } else {
+        // Si no se encuetra en ID agregar la encuesta a la bd
+        const encuesta = await client.query(
+          `INSERT INTO encuestas (nombre_encuesta) 
+              VALUES ($1)
+              RETURNING id_encuesta`,
+          [nombreArchivo]
+        );
+
+        id_encuesta = encuesta.rows[0]?.id_encuesta;
+      }
+
+      // Insertar preguntas solo una vez por encuesta
+      const preguntasExistentes = new Set();
+      const preguntasDB = await client.query(
+        `SELECT pregunta FROM preguntas WHERE ID_encuesta = $1`,
+        [id_encuesta]
+      );
+      preguntasDB.rows.forEach((row) => preguntasExistentes.add(row.pregunta));
 
       // Lista con las preguntas
       const preguntas = Object.keys(respuestas).slice(8);
 
       // 2. Insertar preguntas
       for (const pregunta of preguntas) {
-        await client.query(
-          `INSERT INTO preguntas (ID_encuesta, pregunta) 
-                    VALUES ($1, $2)`,
-          [id_encuesta, pregunta]
-        );
+        if (!preguntasExistentes.has(pregunta)) {
+          await client.query(
+            `INSERT INTO preguntas (ID_encuesta, pregunta) 
+                VALUES ($1, $2)`,
+            [id_encuesta, pregunta]
+          );
+          preguntasExistentes.add(pregunta);
+        }
       }
 
       // 3. Buscar el proyecto curricular en la bd
       const proyecto = await client.query(
         `SELECT id_proyecto FROM proyectos_curriculares
-          WHERE nombre = $1`,
+            WHERE nombre = $1`,
         [datos_usuario[5]]
       );
 
@@ -93,8 +121,8 @@ async function processExcel(filePath, nombreArchivo) {
       // 3. Insertar usuario
       const usuario = await client.query(
         `INSERT INTO usuarios (nombre, correo_personal, correo_institucional, id_proyecto) 
-                VALUES ($1, $2, $3, $4) ON CONFLICT (correo_personal) DO NOTHING 
-                RETURNING id_usuario`,
+            VALUES ($1, $2, $3, $4) ON CONFLICT (correo_personal) DO NOTHING 
+            RETURNING id_usuario`,
         [datos_usuario[4], datos_usuario[7], datos_usuario[6], id_proyecto]
       );
 
