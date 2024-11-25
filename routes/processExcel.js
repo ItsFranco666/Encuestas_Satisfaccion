@@ -50,7 +50,7 @@ async function processExcel(filePath, nombreArchivo) {
       const { ...respuestas } = row;
 
       // Lista con los datos personales del usuario (primeras 8 columnas)
-      const datos_usuario = Object.values(respuestas).slice(0, 8);
+      const datos_usuario = Object.values(respuestas).slice(0, 9);
 
       /**Formatear la fecha obtenida de la celda de hora de finalizacion la cual se utilizara como fecha de realizacion
        * del cuestionario. EL formato se realiza para adaptarlo al formato TIMESTAMP que admite postgreSQL */
@@ -67,7 +67,7 @@ async function processExcel(filePath, nombreArchivo) {
         [nombreArchivo]
       );
 
-      let idEncuesta;
+      let id_encuesta;
 
       // Verificar que la encuesta ya se encuestre en la bd y extraer su ID
       if (verificarEncuesta.rows.length > 0) {
@@ -94,7 +94,7 @@ async function processExcel(filePath, nombreArchivo) {
       preguntasDB.rows.forEach((row) => preguntasExistentes.add(row.pregunta));
 
       // Lista con las preguntas
-      const preguntas = Object.keys(respuestas).slice(8);
+      const preguntas = Object.keys(respuestas).slice(9);
 
       // 2. Insertar preguntas
       for (const pregunta of preguntas) {
@@ -112,7 +112,7 @@ async function processExcel(filePath, nombreArchivo) {
       const proyecto = await client.query(
         `SELECT id_proyecto FROM proyectos_curriculares
             WHERE nombre = $1`,
-        [datos_usuario[5]]
+        [datos_usuario[6]]
       );
 
       // Recuperar el id del proyecto curricular de la bd
@@ -123,7 +123,7 @@ async function processExcel(filePath, nombreArchivo) {
         `INSERT INTO usuarios (nombre, correo_personal, correo_institucional, id_proyecto) 
             VALUES ($1, $2, $3, $4) ON CONFLICT (correo_personal) DO NOTHING 
             RETURNING id_usuario`,
-        [datos_usuario[4], datos_usuario[7], datos_usuario[6], id_proyecto]
+        [datos_usuario[4], datos_usuario[7], datos_usuario[3], id_proyecto]
       );
 
       // Recuperar el id del usuario de la bd
@@ -138,9 +138,7 @@ async function processExcel(filePath, nombreArchivo) {
       const id_respuesta = respuesta.rows[0]?.id_respuesta;
 
       // 5. Insertar detalles de respuestas
-      for (const [pregunta, calificacion] of Object.entries(respuestas).slice(
-        8
-      )) {
+      for (const [pregunta, calificacion] of Object.entries(respuestas).slice(9)) {
         // Buscar el id de la pregunta en la bd según el nombre y la encuesta actual
         const consulta_preguntaId = await client.query(
           `SELECT ID_pregunta FROM preguntas WHERE pregunta = $1 AND ID_encuesta = $2`,
