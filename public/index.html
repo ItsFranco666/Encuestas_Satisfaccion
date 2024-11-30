@@ -8,9 +8,16 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="status">
-      <label id="db-status"></label>
-    </div>
+    <header>
+      <nav class="navbar">
+        <a href="/">Inicio</a>
+        <a href="/encuestas">Encuestas</a>
+        <a href="/usuarios">Usuarios</a>
+        <a href="/preguntas">Preguntas</a>
+        <a href="/respuestas">Respuestas</a>
+        <a href="/calificaciones">Calificaciones</a>
+      </nav>
+    </header>
 
     <div class="encuesta">
       <h1>Subir Encuesta</h1>
@@ -24,10 +31,10 @@
           required
         />
         <button type="submit">Subir y Procesar</button>
+
+        <!-- <div id="mensaje" style="height: 20px;"></div> -->
       </form>
     </div>
-
-    <div id="mensaje"></div>
     <script src="script.js"></script>
   </body>
 </html>

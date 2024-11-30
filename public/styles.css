@@ -1,34 +1,96 @@
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Estilos del cuerpo */
 body {
-  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
-    'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-  background-color: #292929;
-  padding: 10rem;
+  font-family: 'Arial', sans-serif;
+  background-color: #121212; /* Fondo oscuro */
+  color: #e0e0e0; /* Texto claro */
 }
 
-.encuesta h1 {
-  color: aliceblue;
-  font-size: 50px;
+/* Estilos del encabezado y navegación */
+header {
+  background-color: #1f1f1f; /* Fondo más claro para el encabezado */
+  padding: 15px 20px;
 }
 
-.encuesta label {
-  color: #d6d6d6;
-  font-size: 18px;
+.navbar {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap; /* Permite que los elementos se ajusten en múltiples líneas */
 }
 
-.encuesta input,
+.navbar a {
+  font-size: 20px;
+  color: #e0e0e0; /* Texto claro */
+  text-decoration: none;
+  padding: 10px 15px;
+  transition: background-color 0.3s ease;
+  border-radius: 8px;
+}
+
+.navbar a:hover {
+  background-color: rgba(255, 255, 255, 0.2); /* Efecto hover más sutil */
+}
+
+/* Estilos del formulario */
+.encuesta {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #1e1e1e; /* Fondo oscuro para el formulario */
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); /* Sombra más pronunciada */
+}
+
+h1 {
+  margin-bottom: 20px;
+  color: #ffffff; /* Título en blanco */
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+input[type="file"] {
+  width: 100%;
+  display: block;
+  margin-bottom: 20px;
+  background-color: #333333; /* Fondo oscuro para el input */
+  color: #e0e0e0; /* Texto claro en el input */
+  border: none; /* Sin borde */
+  padding: 10px; /* Espaciado interno */
+  border-radius: 5px; /* Bordes redondeados */
+}
+
+input[type="file"]::file-selector-button {
+  background-color: white; /* Botón de selección de archivo en azul */
+  color: black; /* Texto blanco en el botón */
+}
+
 button {
-  margin-bottom: 10px;
-  padding: 10px;
+  background-color: #6200ea; /* Color primario del botón */
+  color: white;
   border: none;
+  padding: 10px 15px;
   border-radius: 5px;
-  background-color: #333333;
-  color: #ffffff;
-  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
+button:hover {
+  background-color: #3700b3; /* Color más oscuro al pasar el ratón */
+}
+
+/* Mensaje de respuesta */
 #mensaje {
-  font-size: 16px;
-  margin-bottom: 10px;
+  margin: 20px 0px;
 }
 
 .ok {
@@ -37,4 +99,28 @@ button {
 
 .error {
   color: red;
+}
+
+/* Media Queries para Responsividad */
+@media (max-width: 768px) {
+  .navbar {
+      flex-direction: column; /* Cambia a una columna en pantallas pequeñas */
+      align-items: center; /* Alinea los elementos al centro */
+      padding-bottom: 10px; /* Espaciado adicional en la parte inferior */
+  }
+
+  .navbar a {
+      padding: 8px 10px; /* Ajusta el espaciado de los enlaces */
+      width: 100%; /* Hace que los enlaces ocupen todo el ancho disponible */
+      text-align: center; /* Centra el texto de los enlaces */
+      margin-bottom: 5px; /* Espaciado entre enlaces */
+  }
+
+  .encuesta {
+      margin-top: 20px; /* Reduce el margen superior en pantallas pequeñas */
+      padding-left: 15px; /* Espaciado interno ajustado para mejor visualización en móviles */
+      padding-right: 15px; 
+      width: calc(100% - 30px); /* Asegura que el formulario no exceda el ancho de la pantalla */
+      box-shadow: none; /* Elimina la sombra en pantallas pequeñas para un aspecto más limpio */
+  }
 }

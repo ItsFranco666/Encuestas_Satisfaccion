@@ -58,7 +58,8 @@ document
         });
 
         const result = await response.json();
-        document.getElementById('mensaje').textContent = result.message;
+        alert(result.message);
 
-        response.ok?mensaje.classList.toggle('ok'):mensaje.classList.toggle('error');
+        // Agregar un estilo al mensaje dependiendo de la respuesta
+        // response.ok?mensaje.classList.toggle('ok'):mensaje.classList.toggle('error');
     });

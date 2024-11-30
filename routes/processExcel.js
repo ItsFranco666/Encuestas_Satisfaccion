@@ -156,10 +156,10 @@ async function processExcel(filePath, nombreArchivo) {
         );
       }
     }
-    return 'Archivo procesado exitosamente.';
+    return 'Archivo procesado exitosamente';
   } catch (error) {
     console.error(error);
-    throw new Error('Error procesando el archivo.');
+    throw new Error('Error procesando el archivo');
   } finally {
     // Terminar pool con la bd
     client.release();
