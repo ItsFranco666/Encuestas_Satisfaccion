@@ -1,0 +1,77 @@
+/* Estilo para la tabla */
+.tabla {
+  padding-top: 5rem;
+}
+
+table {
+  width: 80%;
+  max-width: 1000px;
+  border-collapse: collapse;
+  margin: 0 auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+thead {
+  background-color: #7a49bf;
+  color: #fff;
+}
+
+thead th {
+  text-align: left;
+  padding: 1.5rem;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #2a2a2a;
+}
+
+tbody tr:hover {
+  background-color: #333333;
+}
+
+td,
+th {
+  padding: 1rem;
+  text-align: left;
+  border: 1px solid #333;
+}
+
+td {
+  color: #b3b3b3;
+}
+
+/* Centrado vertical y horizontal */
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+footer {
+  text-align: center;
+  background: #1e1e1e;
+  color: #e0e0e0;
+  padding: 0.5rem 0;
+  margin-top: auto;
+}
+
+/* Adaptación móvil */
+@media (max-width: 768px) {
+  .table {
+    padding: 1rem;
+  }
+
+  table {
+    width: 800%;
+    font-size: 0.8rem;
+  }
+
+  header nav {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

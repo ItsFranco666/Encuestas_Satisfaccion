@@ -36,7 +36,7 @@ document
     .addEventListener('submit', async (event) => {
         event.preventDefault();
 
-        const mensaje = document.getElementById('mensaje');
+        // const mensaje = document.getElementById('mensaje');
 
         const fileInput = document.getElementById('file');
         if (fileInput.files.length === 0) {

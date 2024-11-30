@@ -1,7 +1,7 @@
 // Dependencias
 const express = require('express');
 const multer = require('multer');
-const xlsx = require('xlsx');
+const path = require('path');
 const fs = require('fs');
 
 // Modulos
@@ -58,6 +58,31 @@ app.post('/upload', upload.single('file'), async (req, res) => {
     res.status(500).json({ message: 'Error procesando el archivo.' });
   }
 });
+
+app.get('/usuarios', function(req, res) {
+  res.sendFile(path.join(__dirname, 'public', 'usuarios.html'));
+});
+
+/**Rutas para API's de Tablas */
+// Ruta para obtener usuarios
+app.get('/api/usuarios', async (req, res) => {
+  try {
+    const consulta = `
+      SELECT usuario.id_usuario, usuario.nombre, usuario.correo_personal, usuario.correo_institucional, proyecto.nombre AS nombre_proyecto
+      FROM usuarios AS usuario
+      LEFT JOIN proyectos_curriculares AS proyecto
+      ON proyecto.id_proyecto = usuario.id_proyecto;
+    `;
+
+    const resultados = await pool.query(consulta);
+
+    res.json(resultados.rows);
+  } catch (error) {
+    console.error('Error obteniendo usuarios:', error);
+    res.status(500).json({ message: 'Error al obtener los usuarios.' });
+  }
+});
+
 
 // Inicializar el servidor en el puerto 3000
 app.listen(port, () => {

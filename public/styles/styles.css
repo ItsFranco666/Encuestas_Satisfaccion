@@ -38,7 +38,6 @@ header {
   background-color: rgba(255, 255, 255, 0.2); /* Efecto hover más sutil */
 }
 
-/* Estilos del formulario */
 .encuesta {
   max-width: 600px;
   margin: 50px auto;
@@ -75,7 +74,7 @@ input[type="file"]::file-selector-button {
 }
 
 button {
-  background-color: #6200ea; /* Color primario del botón */
+  background-color: #7a49bf; /* Color primario del botón */
   color: white;
   border: none;
   padding: 10px 15px;
@@ -85,20 +84,7 @@ button {
 }
 
 button:hover {
-  background-color: #3700b3; /* Color más oscuro al pasar el ratón */
-}
-
-/* Mensaje de respuesta */
-#mensaje {
-  margin: 20px 0px;
-}
-
-.ok {
-  color: green;
-}
-
-.error {
-  color: red;
+  background-color: #49247b; /* Color más oscuro al pasar el ratón */
 }
 
 /* Media Queries para Responsividad */
@@ -110,10 +96,10 @@ button:hover {
   }
 
   .navbar a {
-      padding: 8px 10px; /* Ajusta el espaciado de los enlaces */
+    font-size: 15px;
+      padding: 4px 10px; /* Ajusta el espaciado de los enlaces */
       width: 100%; /* Hace que los enlaces ocupen todo el ancho disponible */
       text-align: center; /* Centra el texto de los enlaces */
-      margin-bottom: 5px; /* Espaciado entre enlaces */
   }
 
   .encuesta {
