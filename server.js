@@ -47,10 +47,11 @@ app.post('/upload', upload.single('file'), async (req, res) => {
   // Llamar al metodo que procesa el documento desde la ruta
   const filePath = req.file.path;
   const nombreArchivo = req.body.nombreArchivo;
+  const archivoSinExtension = nombreArchivo.replace(/\.xlsx$/, '');
 
   try {
     // Procesar el documento excel
-    const result = await processExcel(filePath, nombreArchivo);
+    const result = await processExcel(filePath, archivoSinExtension);
     fs.unlinkSync(filePath); // Eliminar el archivo subido para liberar espacio
     res.json({ message: result });
   } catch (error) {
@@ -60,19 +61,19 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 });
 
 // Rutas para interfaces de tablas
-app.get('/encuestas', function(req, res) {
+app.get('/encuestas', function (req, res) {
   res.sendFile(path.join(__dirname, 'public', 'encuestas.html'));
-})
-;app.get('/usuarios', function(req, res) {
+});
+app.get('/usuarios', function (req, res) {
   res.sendFile(path.join(__dirname, 'public', 'usuarios.html'));
 });
-app.get('/preguntas', function(req, res) {
+app.get('/preguntas', function (req, res) {
   res.sendFile(path.join(__dirname, 'public', 'preguntas.html'));
 });
-app.get('/respuestas', function(req, res) {
+app.get('/respuestas', function (req, res) {
   res.sendFile(path.join(__dirname, 'public', 'respuestas.html'));
 });
-app.get('/calificaciones', function(req, res) {
+app.get('/calificaciones', function (req, res) {
   res.sendFile(path.join(__dirname, 'public', 'calificaciones.html'));
 });
 
@@ -134,7 +135,36 @@ app.get('/api/respuestas', async (req, res) => {
       INNER JOIN encuestas encuesta ON respuesta.id_encuesta = encuesta.id_encuesta
       LEFT JOIN usuarios usuario ON respuesta.id_usuario = usuario.id_usuario;
     `);
-    res.json(resultados.rows);
+
+    // Función para convertir el mes numérico a texto
+    const meses = [
+      'enero',
+      'febrero',
+      'marzo',
+      'abril',
+      'mayo',
+      'junio',
+      'julio',
+      'agosto',
+      'septiembre',
+      'octubre',
+      'noviembre',
+      'diciembre',
+    ];
+
+    // Formatear fecha_respuesta a "DD de mes de YYYY"
+    const respuestasFormateadas = resultados.rows.map((respuesta) => {
+      const fecha = new Date(respuesta.fecha_respuesta);
+      const dia = fecha.getDate();
+      const mes = meses[fecha.getMonth()]; // Obtener el nombre del mes
+      const anio = fecha.getFullYear();
+      return {
+        ...respuesta,
+        fecha_respuesta: `${dia} de ${mes} de ${anio}`, // Formato "DD de mes de YYYY"
+      };
+    });
+
+    res.json(respuestasFormateadas);
   } catch (error) {
     console.error('Error obteniendo respuestas:', error);
     res.status(500).json({ message: 'Error al obtener las respuestas.' });
@@ -155,6 +185,21 @@ app.get('/api/calificaciones', async (req, res) => {
   } catch (error) {
     console.error('Error obteniendo calificaciones:', error);
     res.status(500).json({ message: 'Error al obtener las calificaciones.' });
+  }
+});
+
+// Ruta para obtener preguntas de una encuesta específica
+app.get('/api/preguntas/:idEncuesta', async (req, res) => {
+  const { idEncuesta } = req.params;
+  try {
+    const result = await pool.query(
+      'SELECT id_pregunta, pregunta FROM preguntas WHERE id_encuesta = $1',
+      [idEncuesta]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error obteniendo preguntas:', error);
+    res.status(500).json({ error: 'Error obteniendo preguntas' });
   }
 });
 

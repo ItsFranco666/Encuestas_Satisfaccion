@@ -7,6 +7,7 @@
     <link rel="icon" type="image/png" href="assets/icon.png" />
     <link rel="stylesheet" href="./styles/styles.css" />
     <link rel="stylesheet" href="./styles/tablas.css" />
+    <link rel="stylesheet" href="./styles/preguntas.css" />
   </head>
   <body>
     <header>
@@ -19,18 +20,21 @@
         <a href="/calificaciones">Calificaciones</a>
       </nav>
     </header>
-    <select class="form-control">
-      <option value="">Todos</option>
-      <option value="Encuesta 1">Encuesta 1</option>
-      <option value="Encuesta 2">Encuesta 2</option>
-      <option value="Encuesta 3">Encuesta 3</option>
-    </select>
-    <div class="tabla">
-      <table id="tabla-preguntas">
+
+    <!-- Seleccion de Encuestas -->
+    <div class="container">
+      <h1>Preguntas por Encuesta</h1>
+      <div class="select-container">
+        <label for="encuestas">Seleccione una encuesta:</label>
+        <select id="encuestas">
+          <option value="" disabled selected>Seleccione una encuesta...</option>
+        </select>
+        <p id="mensaje" class="hidden">No hay encuestas disponibles.</p>
+      </div>
+      <table id="tablaPreguntas" class="hidden">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Nombre de la Encuesta</th>
+            <th>ID Pregunta</th>
             <th>Pregunta</th>
           </tr>
         </thead>

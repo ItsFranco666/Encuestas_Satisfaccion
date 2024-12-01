@@ -1,40 +1,67 @@
-// Definir la URL de la API o endpoint que devuelve los datos de usuarios
-const apiUrl = '/api/preguntas'; // Asegúrate de tener esta ruta implementada en tu servidor
+document.addEventListener('DOMContentLoaded', async () => {
+  const selectEncuestas = document.getElementById('encuestas');
+  const tablaPreguntas = document.getElementById('tablaPreguntas');
+  const tablaBody = tablaPreguntas.querySelector('tbody');
+  const mensaje = document.getElementById('mensaje');
 
-// Función para obtener los datos de usuarios
-async function obtenerPreguntas() {
-  try {
-    const response = await fetch(apiUrl);
-    if (!response.ok) {
-      throw new Error(`Error al obtener preguntas: ${response.status}`);
+  // Cargar encuestas al select
+  async function cargarEncuestas() {
+    try {
+      const response = await fetch('/api/encuestas');
+      const encuestas = await response.json();
+
+      if (encuestas.length === 0) {
+        mensaje.classList.remove('hidden');
+        return;
+      }
+
+      mensaje.classList.add('hidden');
+      encuestas.forEach((encuesta) => {
+        const option = document.createElement('option');
+        option.value = encuesta.id_encuesta;
+        option.textContent = encuesta.nombre_encuesta;
+        selectEncuestas.appendChild(option);
+      });
+    } catch (error) {
+      console.error('Error cargando encuestas:', error);
     }
-    const preguntas = await response.json();
-    mostrarPreguntas(preguntas);
-  } catch (error) {
-    console.error(error);
-    alert('Ocurrió un error al cargar las preguntas.');
   }
-}
 
-// Función para mostrar los usuarios en la tabla
-function mostrarPreguntas(preguntas) {
-  const tbody = document.querySelector('#tabla-preguntas tbody');
-  tbody.innerHTML = ''; // Limpiar el contenido actual
+  // Cargar preguntas de la encuesta seleccionada
+  async function cargarPreguntas(idEncuesta) {
+    try {
+      const response = await fetch(`/api/preguntas/${idEncuesta}`);
+      const preguntas = await response.json();
 
-  preguntas.forEach((pregunta) => {
-    const fila = document.createElement('tr');
+      tablaBody.innerHTML = ''; // Limpiar tabla
+      if (preguntas.length === 0) {
+        tablaPreguntas.classList.add('hidden');
+        return;
+      }
 
-    // Crear celdas para cada columna
-    const columnas = ['id_pregunta', 'nombre_encuesta', 'pregunta'];
-    columnas.forEach((columna) => {
-      const celda = document.createElement('td');
-      celda.textContent = pregunta[columna] || 'N/A'; // Mostrar 'N/A' si el campo está vacío
-      fila.appendChild(celda);
-    });
+      preguntas.forEach((pregunta) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+                  <td>${pregunta.id_pregunta}</td>
+                  <td>${pregunta.pregunta}</td>
+              `;
+        tablaBody.appendChild(row);
+      });
 
-    tbody.appendChild(fila);
+      tablaPreguntas.classList.remove('hidden');
+    } catch (error) {
+      console.error('Error cargando preguntas:', error);
+    }
+  }
+
+  // Evento para cargar preguntas al seleccionar una encuesta
+  selectEncuestas.addEventListener('change', (event) => {
+    const idEncuesta = event.target.value;
+    if (idEncuesta) {
+      cargarPreguntas(idEncuesta);
+    }
   });
-}
 
-// Llamar a la función para obtener y mostrar los usuarios al cargar la página
-document.addEventListener('DOMContentLoaded', obtenerPreguntas);
+  // Cargar encuestas al iniciar
+  cargarEncuestas();
+});
