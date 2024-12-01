@@ -3,9 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Subir Encuesta</title>
+    <title>Calificaciones</title>
     <link rel="icon" type="image/png" href="assets/icon.png" />
     <link rel="stylesheet" href="./styles/styles.css" />
+    <link rel="stylesheet" href="./styles/tablas.css" />
   </head>
   <body>
     <header>
@@ -18,23 +19,21 @@
         <a href="/calificaciones">Calificaciones</a>
       </nav>
     </header>
-
-    <div class="encuesta">
-      <h1>Subir Encuesta</h1>
-      <form id="upload-form" enctype="multipart/form-data">
-        <label for="file">Seleccione un archivo de Excel:</label>
-        <input
-          type="file"
-          id="file"
-          name="file"
-          accept=".xlsx, .xls"
-          required
-        />
-        <button type="submit">Subir y Procesar</button>
-
-        <!-- <div id="mensaje" style="height: 20px;"></div> -->
-      </form>
+    <div class="tabla">
+      <table id="tabla-usuarios">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Correo Electrónico</th>
+            <th>Correo Insitucional</th>
+            <th>Proyecto Curricular</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
     </div>
-    <script src="./js/index.js"></script>
+
+    <script src="./js/usuarios.js"></script>
   </body>
 </html>

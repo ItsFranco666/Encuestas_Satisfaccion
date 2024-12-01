@@ -59,23 +59,49 @@ app.post('/upload', upload.single('file'), async (req, res) => {
   }
 });
 
-app.get('/usuarios', function(req, res) {
+// Rutas para interfaces de tablas
+app.get('/encuestas', function(req, res) {
+  res.sendFile(path.join(__dirname, 'public', 'encuestas.html'));
+})
+;app.get('/usuarios', function(req, res) {
   res.sendFile(path.join(__dirname, 'public', 'usuarios.html'));
+});
+app.get('/preguntas', function(req, res) {
+  res.sendFile(path.join(__dirname, 'public', 'preguntas.html'));
+});
+app.get('/respuestas', function(req, res) {
+  res.sendFile(path.join(__dirname, 'public', 'respuestas.html'));
+});
+app.get('/calificaciones', function(req, res) {
+  res.sendFile(path.join(__dirname, 'public', 'calificaciones.html'));
 });
 
 /**Rutas para API's de Tablas */
 // Ruta para obtener usuarios
+app.get('/api/encuestas', async (req, res) => {
+  try {
+    const resultados = await pool.query(`
+      SELECT encuesta.id_encuesta, encuesta.nombre_encuesta , COUNT(pregunta.pregunta) AS numero_preguntas
+      FROM encuestas encuesta
+      INNER JOIN preguntas pregunta
+      ON pregunta.id_encuesta = encuesta.id_encuesta
+      GROUP BY(encuesta.id_encuesta);
+    `);
+    res.json(resultados.rows);
+  } catch (error) {
+    console.error('Error obteniendo encuestas:', error);
+    res.status(500).json({ message: 'Error al obtener las encuestas.' });
+  }
+});
+
 app.get('/api/usuarios', async (req, res) => {
   try {
-    const consulta = `
+    const resultados = await pool.query(`
       SELECT usuario.id_usuario, usuario.nombre, usuario.correo_personal, usuario.correo_institucional, proyecto.nombre AS nombre_proyecto
       FROM usuarios AS usuario
       LEFT JOIN proyectos_curriculares AS proyecto
       ON proyecto.id_proyecto = usuario.id_proyecto;
-    `;
-
-    const resultados = await pool.query(consulta);
-
+    `);
     res.json(resultados.rows);
   } catch (error) {
     console.error('Error obteniendo usuarios:', error);
@@ -83,6 +109,54 @@ app.get('/api/usuarios', async (req, res) => {
   }
 });
 
+app.get('/api/preguntas', async (req, res) => {
+  try {
+    const resultados = await pool.query(`
+      SELECT pregunta.id_pregunta, encuesta.nombre_encuesta, pregunta.pregunta
+      FROM preguntas as pregunta
+      INNER JOIN encuestas as encuesta
+      ON pregunta.id_encuesta = encuesta.id_encuesta;
+    `);
+    res.json(resultados.rows);
+  } catch (error) {
+    console.error('Error obteniendo preguntas:', error);
+    res.status(500).json({ message: 'Error al obtener las preguntas.' });
+  }
+});
+
+app.get('/api/respuestas', async (req, res) => {
+  try {
+    const resultados = await pool.query(`
+      SELECT encuesta.nombre_encuesta, usuario.nombre,
+      CAST(respuesta.fecha_respuesta AS date) AS fecha_respuesta, 
+      TO_CHAR(respuesta.fecha_respuesta, 'HH12:MI AM') AS hora_respuesta
+      FROM respuestas AS respuesta
+      INNER JOIN encuestas encuesta ON respuesta.id_encuesta = encuesta.id_encuesta
+      LEFT JOIN usuarios usuario ON respuesta.id_usuario = usuario.id_usuario;
+    `);
+    res.json(resultados.rows);
+  } catch (error) {
+    console.error('Error obteniendo respuestas:', error);
+    res.status(500).json({ message: 'Error al obtener las respuestas.' });
+  }
+});
+
+app.get('/api/calificaciones', async (req, res) => {
+  try {
+    const resultados = await pool.query(`
+      SELECT encuesta.nombre_encuesta, usuario.nombre,
+      AVG(respuesta.calificacion) AS promedio_calificacion
+      FROM respuestas AS respuesta
+      INNER JOIN encuestas encuesta ON respuesta.id_encuesta = encuesta.id_encuesta
+      LEFT JOIN usuarios usuario ON respuesta.id_usuario = usuario.id_usuario
+      GROUP BY encuesta.id_encuesta, usuario.id_usuario;
+    `);
+    res.json(resultados.rows);
+  } catch (error) {
+    console.error('Error obteniendo calificaciones:', error);
+    res.status(500).json({ message: 'Error al obtener las calificaciones.' });
+  }
+});
 
 // Inicializar el servidor en el puerto 3000
 app.listen(port, () => {

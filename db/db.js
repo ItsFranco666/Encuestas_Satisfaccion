@@ -1,7 +1,7 @@
-require('dotenv').config();
 const { Pool } = require('pg');
+require('dotenv').config();
 
-// Conexion pool con la base de datos PostgreSQL
+// Configuracion conexion pool con la base de datos PostgreSQL
 const pool = new Pool({
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,

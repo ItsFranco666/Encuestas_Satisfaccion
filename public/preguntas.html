@@ -3,9 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Subir Encuesta</title>
+    <title>Preguntas</title>
     <link rel="icon" type="image/png" href="assets/icon.png" />
     <link rel="stylesheet" href="./styles/styles.css" />
+    <link rel="stylesheet" href="./styles/tablas.css" />
   </head>
   <body>
     <header>
@@ -18,23 +19,25 @@
         <a href="/calificaciones">Calificaciones</a>
       </nav>
     </header>
-
-    <div class="encuesta">
-      <h1>Subir Encuesta</h1>
-      <form id="upload-form" enctype="multipart/form-data">
-        <label for="file">Seleccione un archivo de Excel:</label>
-        <input
-          type="file"
-          id="file"
-          name="file"
-          accept=".xlsx, .xls"
-          required
-        />
-        <button type="submit">Subir y Procesar</button>
-
-        <!-- <div id="mensaje" style="height: 20px;"></div> -->
-      </form>
+    <select class="form-control">
+      <option value="">Todos</option>
+      <option value="Encuesta 1">Encuesta 1</option>
+      <option value="Encuesta 2">Encuesta 2</option>
+      <option value="Encuesta 3">Encuesta 3</option>
+    </select>
+    <div class="tabla">
+      <table id="tabla-preguntas">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre de la Encuesta</th>
+            <th>Pregunta</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
     </div>
-    <script src="./js/index.js"></script>
+
+    <script src="./js/preguntas.js"></script>
   </body>
 </html>
