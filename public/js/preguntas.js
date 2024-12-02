@@ -39,11 +39,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
       }
 
+      let contador = 0;
       preguntas.forEach((pregunta) => {
+        contador++;
         const row = document.createElement('tr');
         row.innerHTML = `
-                  <td>${pregunta.id_pregunta}</td>
+                  <td>${contador}</td>
                   <td>${pregunta.pregunta}</td>
+                  <td>${pregunta.calificacion}</td>
               `;
         tablaBody.appendChild(row);
       });

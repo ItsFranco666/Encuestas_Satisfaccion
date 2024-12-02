@@ -9,7 +9,9 @@ async function obtenerUsuarios() {
       throw new Error(`Error al obtener usuarios: ${response.status}`);
     }
     const usuarios = await response.json();
-    mostrarUsuarios(usuarios);
+
+    !usuarios.length ? alert('no se encontraron usuarios') : mostrarUsuarios(usuarios);
+
   } catch (error) {
     console.error(error);
     alert('Ocurrió un error al cargar los usuarios.');
@@ -20,7 +22,7 @@ async function obtenerUsuarios() {
 function mostrarUsuarios(usuarios) {
   const tbody = document.querySelector('#tabla-usuarios tbody');
   tbody.innerHTML = ''; // Limpiar el contenido actual
-
+  
   usuarios.forEach((usuario) => {
     const fila = document.createElement('tr');
 

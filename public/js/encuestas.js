@@ -9,7 +9,9 @@ async function obtenerEncuesta() {
       throw new Error(`Error al obtener encuestas: ${respuesta.status}`);
     }
     const encuestas = await respuesta.json();
-    mostrarEncuestas(encuestas);
+
+    !encuestas.length ? alert('No se encontraron encuestas') : mostrarEncuestas(encuestas);
+        
   } catch (error) {
     console.error(error);
     alert('Ocurrió un error al cargar las encuestas.');

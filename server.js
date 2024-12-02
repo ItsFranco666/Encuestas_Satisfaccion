@@ -110,18 +110,24 @@ app.get('/api/usuarios', async (req, res) => {
   }
 });
 
-app.get('/api/preguntas', async (req, res) => {
+// Ruta para obtener preguntas de una encuesta específica
+app.get('/api/preguntas/:idEncuesta', async (req, res) => {
+  const { idEncuesta } = req.params;
   try {
-    const resultados = await pool.query(`
-      SELECT pregunta.id_pregunta, encuesta.nombre_encuesta, pregunta.pregunta
-      FROM preguntas as pregunta
-      INNER JOIN encuestas as encuesta
-      ON pregunta.id_encuesta = encuesta.id_encuesta;
-    `);
-    res.json(resultados.rows);
+    const result = await pool.query(`
+      SELECT pregunta.id_pregunta, pregunta.pregunta, 
+      AVG(detalle.calificacion)::NUMERIC(10,1) AS calificacion
+      FROM preguntas pregunta 
+      LEFT JOIN detalles_respuestas detalle ON detalle.id_pregunta = pregunta.id_pregunta
+      WHERE pregunta.id_encuesta = $1
+      GROUP BY pregunta.id_pregunta
+      ORDER BY pregunta.id_pregunta ASC;`,
+      [idEncuesta]
+    );
+    res.json(result.rows);
   } catch (error) {
     console.error('Error obteniendo preguntas:', error);
-    res.status(500).json({ message: 'Error al obtener las preguntas.' });
+    res.status(500).json({ error: 'Error obteniendo preguntas' });
   }
 });
 
@@ -185,21 +191,6 @@ app.get('/api/calificaciones', async (req, res) => {
   } catch (error) {
     console.error('Error obteniendo calificaciones:', error);
     res.status(500).json({ message: 'Error al obtener las calificaciones.' });
-  }
-});
-
-// Ruta para obtener preguntas de una encuesta específica
-app.get('/api/preguntas/:idEncuesta', async (req, res) => {
-  const { idEncuesta } = req.params;
-  try {
-    const result = await pool.query(
-      'SELECT id_pregunta, pregunta FROM preguntas WHERE id_encuesta = $1',
-      [idEncuesta]
-    );
-    res.json(result.rows);
-  } catch (error) {
-    console.error('Error obteniendo preguntas:', error);
-    res.status(500).json({ error: 'Error obteniendo preguntas' });
   }
 });
 
